@@ -24,12 +24,15 @@ const obs = new IntersectionObserver(
 );
 document.querySelectorAll('.fu').forEach(el => obs.observe(el));
 
-/* ── Netlify form helper ──────────────────────────────── */
-function netlifyPost(formName, data) {
-  return fetch('/', {
+/* ── Formspree config ─────────────────────────────────── */
+// Sign up free at https://formspree.io → create a form → paste your ID below
+const FORMSPREE_ID = 'YOUR_FORM_ID';
+
+function formspreePost(data) {
+  return fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({ 'form-name': formName, ...data }).toString(),
+    headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
   });
 }
 
@@ -112,9 +115,7 @@ async function pay() {
   if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
 
   try {
-    await netlifyPost('gallery-enquiry', {
-      name: n, email: e, piece: ci.title, format: t || '', size: s, message: msg
-    });
+    await formspreePost({ name: n, email: e, piece: ci.title, format: t || '', size: s, message: msg, _subject: `Gallery Enquiry: ${ci.title} — JB Designs` });
   } catch (err) {
     console.warn('Form submission error:', err);
   }
@@ -151,10 +152,7 @@ async function sendCustomOrder() {
   btn.textContent = 'Sending…';
 
   try {
-    await netlifyPost('custom-order', {
-      name: n, email: e, 'order-type': t || '', description: d,
-      size: s, budget: b, deadline: dt
-    });
+    await formspreePost({ name: n, email: e, orderType: t || '', description: d, size: s, budget: b, deadline: dt, _subject: 'Custom Order Enquiry — JB Designs' });
   } catch (err) {
     console.warn('Form submission error:', err);
   }
@@ -180,7 +178,7 @@ async function sendCF() {
   btn.textContent = 'Sending…';
 
   try {
-    await netlifyPost('contact', { name: n, email: e, subject: s, message: m });
+    await formspreePost({ name: n, email: e, subject: s, message: m, _subject: `Contact: ${s || 'General enquiry'} — JB Designs` });
   } catch (err) {
     console.warn('Form submission error:', err);
   }
