@@ -24,12 +24,12 @@ const obs = new IntersectionObserver(
 );
 document.querySelectorAll('.fu').forEach(el => obs.observe(el));
 
-/* ── Formspree config ─────────────────────────────────── */
-// Sign up free at https://formspree.io → create a form → paste your ID below
-const FORMSPREE_ID = 'YOUR_FORM_ID';
+/* ── FormSubmit config ────────────────────────────────── */
+// No account needed — submissions go straight to the email below
+const SUBMIT_EMAIL = 'jaydebakayi@icloud.com';
 
 function formspreePost(data) {
-  return fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+  return fetch(`https://formsubmit.co/ajax/${SUBMIT_EMAIL}`, {
     method: 'POST',
     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
